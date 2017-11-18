@@ -5,10 +5,11 @@ public class Matrix {
 	public static int[][] matrix1;
 	public static int[][] matrix2;
 	public static int[][] matrixResult;
+	public static int[][] matrixResult2;
 	
 	public static void main(String[] args) {
 
-		
+		long startTime;
 		
 		
 		Scanner input = new Scanner(System.in);
@@ -21,6 +22,7 @@ public class Matrix {
 		matrix1 = new int[order][order];
 		matrix2 = new int[order][order];
 		matrixResult = new int[order][order];
+		matrixResult2 = new int[order][order];
 		
 		System.out.println("Enter input for first matrix:");
         for (int i = 0; i < order; i++) {
@@ -38,28 +40,28 @@ public class Matrix {
 			}
 		}
 
+		
+
 		Thread thread1 = new Thread (new MultiThread(0, 3));
 		Thread thread2 = new Thread (new MultiThread(1, 3));
 		Thread thread3 = new Thread (new MultiThread(2, 3));
+		thread1.setPriority( Thread.MAX_PRIORITY );
+		thread2.setPriority( Thread.MAX_PRIORITY );
+		thread3.setPriority( Thread.MAX_PRIORITY );
 		thread1.start();
 		thread2.start();
 		thread3.start();
+		startTime = System.nanoTime(); 
 		
-		System.out.println("The first matrix is:");
-		for (int i = 0; i < order; i++) {
-			for (int j = 0; j < order; j++){
-				System.out.print(matrix1[i][j] + " ");
-			}
-			System.out.println("");
+		try {
+			thread1.join();
+			thread2.join();
+			thread3.join();
+		}
+		catch (Exception e){
+			System.out.println("Some Exception");
 		}
 
-		System.out.println("The second matrix is:");
-		for (int i = 0; i < order; i++) {
-			for (int j = 0; j < order; j++){
-				System.out.print(matrix2[i][j] + " ");
-			}
-			System.out.println("");
-		}
 
 		System.out.println("The output matrix is:");
 		for (int i = 0; i < order; i++) {
@@ -69,6 +71,32 @@ public class Matrix {
 			System.out.println("");
 		}
 
+		System.out.println((System.nanoTime() - startTime)/1000);
+
+		
+
+
+		startTime = System.nanoTime();
+		for (int row = 0 ; row < 3 ; row++){
+	
+			for (int i = 0; i < 3  ; i++ ) {
+				int sum = 0;
+				for (int j = 0 ; j < 3 ; j++ ) {
+					sum = sum + matrix1[row][j] * matrix2[j][i];
+				}
+				matrixResult2[row][i] = sum;
+			}
+		}
+
+		System.out.println("The output matrix is:");
+		for (int i = 0; i < order; i++) {
+			for (int j = 0; j < order; j++){
+				System.out.print(matrixResult2[i][j] + " ");
+			}
+			System.out.println("");
+		}
+
+		System.out.println((System.nanoTime() - startTime)/1000);
 
 
 	}
